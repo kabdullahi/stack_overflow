@@ -1,0 +1,37 @@
+<h1><%= @question.title %></h1>
+<hr />
+
+<p>
+  <%= markdown(@question.body) %>
+</p>
+<h4>Published <%= time_ago_in_words @question.created_at %> ago</h4>
+<%= link_to "Back to Index", questions_path %>
+
+<hr>
+<h2>Answers</h2>
+<% @question.answers.each do |answer| %>
+    <p>
+    <%= answer.body %>
+    <p>Published <%= time_ago_in_words answer.created_at %> ago</p>
+    </p>
+  <% if current_user && current_user.id === @question.user_id %>
+    <%= link_to "Approve Answer", question_path %>
+  <% end %>
+
+  <% if current_user && current_user.id === answer.user_id %>
+    <%= link_to "Delete", question_answer_url(@question, answer), method: :delete %>
+  <% end %>
+<% end %>
+<hr>
+
+
+<h2>Add an Answer</h2>
+<%= form_for([@question, @question.answers.build]) do |f| %>
+  <p>
+    <%= f.label :body %><br>
+    <%= f.text_area :body %>
+  </p>
+  <p>
+    <%= f.submit %>
+  </p>
+<% end %>
